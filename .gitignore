@@ -1,0 +1,26 @@
+# Entornos virtuales
+venv/
+venv_azure/ # O el nombre que le hayas dado a tu venv
+*.pyc
+__pycache__/
+
+# Logs y datos temporales
+*.log
+*.sqlite3 # Si usas SQLite
+.env # Tu archivo de variables de entorno local
+
+# Archivos de paquetes/construcción
+*.zip
+*.tar.gz
+*.egg-info/
+dist/
+build/
+
+# Carpetas de trabajo o datos generados (si no deben ir en el repo)
+transcriptor/work/
+transcriptor/work/data/
+models/ # Si descargas modelos de ML aquí localmente
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
