@@ -74,14 +74,14 @@ def download_audio(url: str, output_file: Path):
     print("📥 Descargando audio de YouTube...")
     try:
         # Verificar que los ejecutables existen
-        if not YT_DLP_EXE.exists():
-            raise FileNotFoundError(f"El ejecutable yt-dlp no se encontró en: {YT_DLP_EXE}")
-        if not FFMPEG_EXE.exists():
-            raise FileNotFoundError(f"El ejecutable ffmpeg no se encontró en: {FFMPEG_EXE}")
+        # if not YT_DLP_EXE.exists():
+        #     raise FileNotFoundError(f"El ejecutable yt-dlp no se encontró en: {YT_DLP_EXE}")
+        # if not FFMPEG_EXE.exists():
+        #     raise FileNotFoundError(f"El ejecutable ffmpeg no se encontró en: {FFMPEG_EXE}")
 
         result = subprocess.run(
             [
-                str(YT_DLP_EXE),
+                str(yt-dlp),
                 "-x",
                 "--audio-format", "mp3",
                 "-o", str(output_file), # Convertir Path a str para subprocess
