@@ -10,7 +10,7 @@ import azure.cognitiveservices.speech as speechsdk
 from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, HttpUrl
 from typing import Optional
-from transformers import pipeline
+#from transformers import pipeline
 from utils.diagnostico_audio import diagnostico_completo
 from Backend_app.config import settings
 from pathlib import Path
