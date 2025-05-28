@@ -236,30 +236,30 @@ def limpiar_y_formatear_dialogo(texto: str) -> str:
 #             dialogo.append(linea.strip()) # Por ahora, solo añade la línea
 
 #     return "\n".join(dialogo)
-
-summarizer = None
-try:
-    # Intentar cargar el pipeline. Podrías incluso verificar si los archivos existen localmente primero.
-    # Esto intenta cargar el modelo de forma optimizada si ya está en caché.
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-    print("DEBUG: Modelo de resumen cargado correctamente.")
-except (OSError, HfHubPyFilesError, HfHubInvalidUrl) as e:
-    # Error al encontrar/descargar el modelo, o URL inválida en Hugging Face Hub
-    print(f"ERROR CRÍTICO: No se pudieron encontrar/descargar los archivos del modelo de resumen: {e}")
-    print("Asegúrate de que el modelo 'facebook/bart-large-cnn' está disponible y de que tienes conexión a internet si es la primera vez.")
-    # En este caso, podrías considerar que la aplicación no puede iniciarse sin el modelo crítico
-    # raise # Re-lanzar el error para que FastAPI falle al inicio
-except MemoryError:
-    print("ERROR CRÍTICO: Insuficiente memoria RAM para cargar el modelo de resumen.")
-    print("Considera aumentar la RAM de tu sistema o usar un modelo más pequeño.")
-    # raise
-except Exception as e:
-    # Cualquier otro error inesperado
-    print(f"ERROR INESPERADO al cargar el modelo de resumen: {e}")
-    # raise # Podrías decidir que el inicio debe fallar
-finally:
-    if summarizer is None:
-        print("ADVERTENCIA: La funcionalidad de resumen temático no estará disponible debido al fallo en la carga del modelo.")
+######## TODO ESTO SE BAJA POR FALTA DE ESPACIO EN DISCO
+# summarizer = None
+# try:
+#     # Intentar cargar el pipeline. Podrías incluso verificar si los archivos existen localmente primero.
+#     # Esto intenta cargar el modelo de forma optimizada si ya está en caché.
+#     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+#     print("DEBUG: Modelo de resumen cargado correctamente.")
+# except (OSError, HfHubPyFilesError, HfHubInvalidUrl) as e:
+#     # Error al encontrar/descargar el modelo, o URL inválida en Hugging Face Hub
+#     print(f"ERROR CRÍTICO: No se pudieron encontrar/descargar los archivos del modelo de resumen: {e}")
+#     print("Asegúrate de que el modelo 'facebook/bart-large-cnn' está disponible y de que tienes conexión a internet si es la primera vez.")
+#     # En este caso, podrías considerar que la aplicación no puede iniciarse sin el modelo crítico
+#     # raise # Re-lanzar el error para que FastAPI falle al inicio
+# except MemoryError:
+#     print("ERROR CRÍTICO: Insuficiente memoria RAM para cargar el modelo de resumen.")
+#     print("Considera aumentar la RAM de tu sistema o usar un modelo más pequeño.")
+#     # raise
+# except Exception as e:
+#     # Cualquier otro error inesperado
+#     print(f"ERROR INESPERADO al cargar el modelo de resumen: {e}")
+#     # raise # Podrías decidir que el inicio debe fallar
+# finally:
+#     if summarizer is None:
+#         print("ADVERTENCIA: La funcionalidad de resumen temático no estará disponible debido al fallo en la carga del modelo.")
 
 
 
