@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from redactor.redactor import router as redactor_router
 from transcriptor.transcriptor import router as transcriptor_router
+from datetime import datetime
 
 
 
@@ -54,25 +55,56 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 # Ruta raíz para probar que el backend funciona
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    html_content = """
+    # Obtener la hora actual
+    now = datetime.now()
+    current_hour = now.hour
+
+    # Definir el saludo según la hora
+    if 6 <= current_hour < 12:
+        greeting = "¡Buenos días!"
+    elif 12 <= current_hour < 18:
+        greeting = "¡Buenas tardes!"
+    else:
+        greeting = "¡Buenas noches!"
+
+    # Formatear la fecha y la hora
+    # Ejemplo: Miércoles, 28 de mayo de 2025 - 02:21:45
+    formatted_datetime = now.strftime("%A, %d de %B de %Y - %H:%M:%S")
+
+    html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8" />
         <title>Auditxt Backend</title>
         <style>
-            body {
+            body {{
                 background-color: #003366;
                 color: white;
                 font-family: Arial, sans-serif;
                 font-weight: bold;
                 text-align: center;
-                padding-top: 100px;
-            }
+                padding-top: 50px; /* Reducimos el padding para que quepa más contenido */
+            }}
+            h1 {{
+                font-size: 2.5em; /* Tamaño original para el título principal */
+                margin-bottom: 0.5em;
+            }}
+            .greeting {{
+                font-size: 1.8em; /* Un poco más grande para el saludo */
+                margin-top: 0;
+                margin-bottom: 0.5em;
+            }}
+            .datetime {{
+                font-size: 1.2em; /* Tamaño para fecha y hora */
+                margin-top: 0;
+            }}
         </style>
     </head>
     <body>
         <h1>Auditxt backend funcionando correctamente</h1>
+        <p class="greeting">{greeting}</p>
+        <p class="datetime">{formatted_datetime}</p>
     </body>
     </html>
     """
