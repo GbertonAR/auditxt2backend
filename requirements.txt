@@ -45,3 +45,5 @@ google-auth==2.40.2
 googleapis-common-protos==1.70.0
 yt-dlp==2025.5.22
 zipp==3.21.0
+openai==1.81.0
+uvicorn==0.34.2
