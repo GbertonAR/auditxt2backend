@@ -28,7 +28,7 @@ app.add_middleware(
 # Todas las rutas definidas en 'redactor_router' ahora tendrán el prefijo '/api'
 app.include_router(redactor_router, prefix="/api")
 
-#app.include_router(transcriptor_router, prefix="/api")  # ✅ usa /api
+app.include_router(transcriptor_router, prefix="/api")  # ✅ usa /api
 
 
 # Puedes tener una forma de mapear job_id a conexiones WebSocket
