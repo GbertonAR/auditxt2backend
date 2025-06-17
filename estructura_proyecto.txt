@@ -1,0 +1,50 @@
+Listado de rutas de carpetas
+El n·mero de serie del volumen es 68CA-4415
+C:.
+|   .env
+|   .gitignore
+|   app.py
+|   estructura_proyecto.txt
+|   requirements copy.txt
+|   requirements.txt
+|   requirementsVIE.txt
+|   seteo.txt
+|   
+|       
++---audios
++---Backend_app
+|   |   config.py
+|   |   main.py
+|   |   
+|   |   
+|           
++---redactor
+|   |   audio.py
+|   |   redactor copy.py
+|   |   redactor.py
+|   |   redactorViejo.py
+|   |   schemas.py
+|           
++---services
+|   |   azure_core.py
+|   |   azure_transcriptor.py
+|   |   
+|           
++---transcriptor
+|   |   diagnostico_audio.py
+|   |   t.py
+|   |   texto_to_audio.py
+|   |   text_Audio.py
+|   |   transcribir_archivo.py
+|   |   transcribir_funcion.py
+|   |   transcriptor copy 2.py
+|   |   transcriptor copy 3.py
+|   |   transcriptor copy.py
+|   |   transcriptor.py
+|   |   
+          
++---utils
+|   |   diagnostico_audio.py
+|   |   __init__.py
+|   |   
+|           

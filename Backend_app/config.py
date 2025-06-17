@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     azure_region: str      # Si no la tenías, añádela
     work_dir: Path         # ¡Esta es la que faltaba!
     data_work: Path        # ¡Esta es la otra que faltaba!
+    audio_work: Path        # ¡Y esta también!
     # Si también usas LANGUAGE en transcriptor.py desde settings, añádelo
     # language: str = "es-ES" # Con un valor por defecto si lo deseas
 

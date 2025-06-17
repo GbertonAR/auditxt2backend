@@ -52,7 +52,7 @@ WAV_FILENAME = DATA_WORK / "audio_convertido.wav"
 # --- Constantes de Azure y Lenguaje (tomadas de settings) ---
 # Estas también deben estar en tu .env y cargadas por settings
 AZURE_SPEECH_KEY = settings.azure_speech_key
-AZURE_REGION = settings.azure_region
+AZURE_REGION = settings.AZURE_REGION
 # Asume que tienes una variable de lenguaje en settings, o defínela aquí
 LANGUAGE = "es-ES" # O settings.azure_speech_language si la agregaste
 
@@ -368,8 +368,7 @@ async def transcribir_audio(req: TranscripcionRequest):
             raise HTTPException(status_code=400, detail="Modo inválido. Usa 'dialogo' o 'resumen'.")
 
         print("DEBUG: Proceso completado exitosamente.")
-        #return {"resultado": resultado.strip()}
-        return {"transcripcion": resultado.strip()}
+        return {"resultado": resultado.strip()}
 
     except HTTPException:
         # Relanza HTTPException directamente

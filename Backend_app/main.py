@@ -1,13 +1,13 @@
-# from fastapi import FastAPI
-# from .routers import redactor, transcriptor
+# # Backend_app/main.py
 
-# app = FastAPI(title="API de Prensa y Transcripción")
-
-# app.include_router(redactor.router, prefix="/api/redactor", tags=["Redactor"])
-# app.include_router(transcriptor.router, prefix="/api/transcriptor", tags=["Transcriptor"])
 from fastapi import FastAPI
+from Backend_app.routers import transcriptor
+from Backend_app.routers import transcriptor_audio
 
-app = FastAPI()
+app = FastAPI(title="API Auditxt")
+
+app.include_router(transcriptor.router, prefix="/api/transcriptor", tags=["Transcriptor"])
+app.include_router(transcriptor_audio.router, prefix="/api/transcribir-archivo", tags=["transcriptor_audio"])
 
 @app.get("/")
 def root():

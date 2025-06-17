@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 # CAMBIO CLAVE: Importar AsyncAzureOpenAI
 from openai import AsyncAzureOpenAI
 from Backend_app.config import settings
 import logging
+import os
+from docx import Document
 
 # Configurar logger
 logger = logging.getLogger(__name__)
@@ -33,7 +35,13 @@ class RedaccionRequest(BaseModel):
     contenido: str
     tono: str = "institucional"
     audiencia: str = "público general"
-
+    
+#Modelo de salida
+class Articulo(BaseModel):
+    titulo: str
+    contenido: str
+    autor: str
+    
 # Función para generar contenido con Azure OpenAI
 async def generar_contenido_ia(prompt: str, tono: str, audiencia: str) -> str:
     system_prompt = (
@@ -73,3 +81,29 @@ async def generar_contenido(data: RedaccionRequest):
     except Exception as e:
         logger.error(f"❌ Error en endpoint /generar: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error al generar contenido: {str(e)}")
+    
+@router.post("/guardar-articulo")
+async def descargar_articulo(data: Articulo, formato: str = Query("txt", enum=["txt", "docx"])):
+    try:
+        os.makedirs("articulos", exist_ok=True)
+
+        filename = f"{data.titulo}.{formato}"
+        filepath = os.path.join("articulos", filename)
+
+        if formato == "txt":
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(f"Título: {data.titulo}\n")
+                f.write(f"Autor: {data.autor}\n\n")
+                f.write(data.contenido)
+        else:
+            doc = Document()
+            doc.add_heading(data.titulo, 0)
+            doc.add_paragraph(f"Autor: {data.autor}")
+            doc.add_paragraph("")
+            doc.add_paragraph(data.contenido)
+            doc.save(filepath)
+
+        return FileResponse(filepath, media_type="application/octet-stream", filename=filename)
+
+    except Exception as e:
+        return {"error": str(e)}   

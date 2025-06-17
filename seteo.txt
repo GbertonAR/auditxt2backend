@@ -1,0 +1,42 @@
+[
+  {
+    "name": "API_VERSION",
+    "value": "2024-12-01-preview",
+    "slotSetting": false
+  },
+  {
+    "name": "AZURE_OPENAI_DEPLOYMENT",
+    "value": "gpt-4-ansv",
+    "slotSetting": false
+  },
+  {
+    "name": "AZURE_OPENAI_ENDPOINT",
+    "value": "https://gbert-mave4hju-northcentralus.cognitiveservices.azure.com/",
+    "slotSetting": false
+  },
+  {
+    "name": "AZURE_OPENAI_KEY",
+    "value": "9OvJ5fgalUlYClcgEuunGEypjZR7DAbZs49LTG2B8F1R5hh2y0toJQQJ99BEACHrzpqXJ3w3AAAAACOGPa9q",
+    "slotSetting": false
+  },
+  {
+    "name": "AZURE_REGION",
+    "value": "westus",
+    "slotSetting": false
+  },
+  {
+    "name": "AZURE_SPEECH_KEY",
+    "value": "WjLxIy0kMKmebYud4wE3oJA8RIzd1632JKIsJhg1hgCqrPr78ZsIJQQJ99BEAC4f1cMXJ3w3AAAYACOGl4TH",
+    "slotSetting": false
+  },
+  {
+    "name": "PORT",
+    "value": "8000",
+    "slotSetting": false
+  },
+  {
+    "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+    "value": "1",
+    "slotSetting": false
+  }
+]
