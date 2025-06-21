@@ -30,3 +30,5 @@ idna==3.10
 
 # --- OPCIONAL DEBUG ---
 rich==14.0.0
+transformers==4.52.3
+tokenizers==0.21.1
