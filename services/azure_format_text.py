@@ -2,13 +2,10 @@
 import re
 
 # Si usas Hugging Face para resumen
-from transformers import pipeline
 
-try:
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-except Exception as e:
-    summarizer = None
-    print(f"ERROR: No se pudo cargar el modelo de resumen: {e}")
+from services.azure_client import openai_client
+
+
     
 def limpiar_y_formatear_dialogo(texto: str) -> str:
     """
@@ -32,27 +29,37 @@ def limpiar_y_formatear_dialogo(texto: str) -> str:
     # Unir las frases con dos saltos de línea para un formato más tipo párrafo
     return "\n\n".join(dialogo_formateado)
 
-def resumen_tematico(texto: str) -> str:
-    """Genera un resumen temático del texto utilizando un modelo Hugging Face."""
-    if not summarizer:
-        return "ERROR: El servicio de resumen no está disponible."
+# def resumen_tematico(texto: str) -> str:
+#     """Genera un resumen temático del texto utilizando un modelo Hugging Face."""
+#     if not summarizer:
+#         return "ERROR: El servicio de resumen no está disponible."
     
-    # El modelo BART tiene un límite de token (1024), por lo que dividimos el texto.
-    # Es una división simple por caracteres, no por tokens, lo cual puede ser impreciso.
-    # Para un manejo de tokens más preciso, usar un tokenizer de transformers.
-    chunk_size = 1000 # Un poco menos de 1024 para dar margen
-    chunks = [texto[i:i + chunk_size] for i in range(0, len(texto), chunk_size)]
+#     # El modelo BART tiene un límite de token (1024), por lo que dividimos el texto.
+#     # Es una división simple por caracteres, no por tokens, lo cual puede ser impreciso.
+#     # Para un manejo de tokens más preciso, usar un tokenizer de transformers.
+#     chunk_size = 1000 # Un poco menos de 1024 para dar margen
+#     chunks = [texto[i:i + chunk_size] for i in range(0, len(texto), chunk_size)]
     
-    # Procesar cada chunk
-    resumenes = []
-    for i, chunk in enumerate(chunks):
-        try:
-            # Puedes ajustar max_length y min_length según tus necesidades
-            summary = summarizer(chunk, max_length=150, min_length=50, do_sample=False)
-            resumenes.append(summary[0]['summary_text'])
-            print(f"DEBUG: Resumen de chunk {i+1}/{len(chunks)} completado.")
-        except Exception as e:
-            print(f"ADVERTENCIA: No se pudo resumir el chunk {i+1}: {e}")
-            resumenes.append(f"ERROR al resumir parte {i+1}.")
+#     # Procesar cada chunk
+#     resumenes = []
+#     for i, chunk in enumerate(chunks):
+#         try:
+#             # Puedes ajustar max_length y min_length según tus necesidades
+#             summary = summarizer(chunk, max_length=150, min_length=50, do_sample=False)
+#             resumenes.append(summary[0]['summary_text'])
+#             print(f"DEBUG: Resumen de chunk {i+1}/{len(chunks)} completado.")
+#         except Exception as e:
+#             print(f"ADVERTENCIA: No se pudo resumir el chunk {i+1}: {e}")
+#             resumenes.append(f"ERROR al resumir parte {i+1}.")
             
-    return "\n\n".join(resumenes)
+#     return "\n\n".join(resumenes)
+
+def resumen_tematico(texto: str) -> str:
+    prompt = f"Resumí el siguiente texto en pocas frases:\n\n{texto}"
+    response = openai_client.chat.completions.create(
+        model="gpt-4",  # o el deployment que tengas configurado
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.5,
+        max_tokens=500,
+    )
+    return response.choices[0].message.content.strip()
