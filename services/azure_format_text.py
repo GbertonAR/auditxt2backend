@@ -3,7 +3,7 @@ import re
 
 # Si usas Hugging Face para resumen
 
-from services.azure_client import openai_client
+from .azure_client import openai_client
 
 
     
