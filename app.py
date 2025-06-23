@@ -134,11 +134,11 @@ def read_root():
 # Ejecutar localmente con python app.py (opcional)
 if __name__ == "__main__":
     # Para desarrollo local:
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    #uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
     #pass  # No ejecutar automáticamente al importar este módulo
     # Para despliegue en producción (ej. Azure App Service):
     # El puerto puede ser configurado por la plataforma (usualmente 80 o 8000).
     # Azure App Service suele usar la variable de entorno WEBSITES_PORT si la configuras.
     # Si no, a menudo el puerto por defecto es 8000.
-    #uvicorn.run("app:app", host="0.0.0.0", port=8000)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000)
     # Considera quitar 'reload=True' en producción para mejor rendimiento y estabilidad.
