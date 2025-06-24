@@ -1,28 +1,17 @@
 # Backend_app/config.py
-
-from pydantic-settings import BaseSettings, SettingsConfigDict
-from pathlib import Path # Importa Path para manejar rutas de forma limpia
+from pydantic import BaseSettings, Field
 
 class Settings(BaseSettings):
-    # Tus variables existentes (ej. Azure OpenAI)
-    AZURE_OPENAI_API_KEY: str
-    AZURE_OPENAI_ENDPOINT: str
-    AZURE_OPENAI_DEPLOYMENT: str
-    API_VERSION: str
+    azure_openai_key: str = Field(..., env="AZURE_OPENAI_KEY")
+    azure_openai_endpoint: str = Field(..., env="AZURE_OPENAI_ENDPOINT")
+    azure_openai_deployment: str = Field(..., env="AZURE_OPENAI_DEPLOYMENT")
+    api_version: str = Field("2025-03-01-preview", env="API_VERSION")  # O AZURE_OPENAI_API_VERSION si preferís
 
-    # ASEGÚRATE DE QUE ESTAS LÍNEAS ESTÉN AQUÍ:
-    AZURE_SPEECH_KEY: str  # Si no la tenías, añádela
-    AZURE_REGION: str      # Si no la tenías, añádela
-    work_dir: Path         # ¡Esta es la que faltaba!
-    data_work: Path        # ¡Esta es la otra que faltaba!
-    audio_work: Path        # ¡Y esta también!
-    # Si también usas LANGUAGE en transcriptor.py desde settings, añádelo
-    # language: str = "es-ES" # Con un valor por defecto si lo deseas
+    audio_work: str = Field("/tmp/workdir/audio", env="audio_work")
+    data_work: str = Field("/tmp/workdir/data", env="data_work")
+    work_dir: str = Field("/tmp/workdir", env="work_dir")
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        extra='ignore' # Para ignorar variables en .env que no estén en la clase Settings
-    )
+    class Config:
+        env_file = ".env"  # para desarrollo local (opcional)
 
-# Crea la instancia de settings para que sea importable
 settings = Settings()

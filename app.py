@@ -23,6 +23,15 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 
+from Backend_app.config import settings
+
+
+#import logging
+logger = logging.getLogger(__name__)
+logger.info(f"🧪 Azure OpenAI Key: {settings.azure_openai_key[:5]}...")  # solo los primeros caracteres por seguridad
+logger.info(f"🧪 API Version: {settings.api_version}")
+logger.info(f"🧪 Audio Work Dir: {settings.audio_work}")
+
 
 app = FastAPI()
 
