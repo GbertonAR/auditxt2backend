@@ -28,12 +28,10 @@ charset-normalizer==3.4.2
 click==8.1.8
 cloudpickle==3.1.1
 colorama==0.4.6
-credentials==1.1
 cryptography==45.0.2
 databricks-sdk==0.54.0
 Deprecated==1.2.18
 distro==1.9.0
-dotenv==0.9.9
 etils==1.12.2
 fastapi==0.115.12
 ffmpeg-python==0.2.0
@@ -141,7 +139,7 @@ treescope==0.1.9
 typing-inspection==0.4.1
 typing_extensions==4.13.2
 urllib3==2.4.0
-uvicorn==0.34.2
+uvicorn[standard]==0.34.2
 wrapt==1.17.2
 yt-dlp==2025.5.22
 zipp==3.21.0
