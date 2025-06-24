@@ -14,7 +14,8 @@ from Backend_app.config import settings
 from .azure_format_text import limpiar_y_formatear_dialogo, resumen_tematico
 
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger(__name__)    
 
 # --- Constantes ---
 AZURE_KEY = settings.azure_speech_key

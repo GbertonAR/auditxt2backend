@@ -1,18 +1,18 @@
 # Backend_app/config.py
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic-settings import BaseSettings, SettingsConfigDict
 from pathlib import Path # Importa Path para manejar rutas de forma limpia
 
 class Settings(BaseSettings):
     # Tus variables existentes (ej. Azure OpenAI)
-    azure_openai_key: str
-    azure_openai_endpoint: str
-    azure_openai_deployment: str
-    api_version: str
+    AZURE_OPENAI_API_KEY: str
+    AZURE_OPENAI_ENDPOINT: str
+    AZURE_OPENAI_DEPLOYMENT: str
+    API_VERSION: str
 
     # ASEGÚRATE DE QUE ESTAS LÍNEAS ESTÉN AQUÍ:
-    azure_speech_key: str  # Si no la tenías, añádela
-    azure_region: str      # Si no la tenías, añádela
+    AZURE_SPEECH_KEY: str  # Si no la tenías, añádela
+    AZURE_REGION: str      # Si no la tenías, añádela
     work_dir: Path         # ¡Esta es la que faltaba!
     data_work: Path        # ¡Esta es la otra que faltaba!
     audio_work: Path        # ¡Y esta también!

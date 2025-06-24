@@ -14,15 +14,25 @@ from datetime import datetime
 # from transcriptor.transcribir_archivo import router as transcriptor_router
 # app.include_router(transcriptor_router, prefix="/api", tags=["Transcriptor"])
 
+import logging
+import sys
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
+
 app = FastAPI()
 
 #app.include_router(transcriptor_router)
 
 # CORS para permitir requests desde frontend (ej. localhost:5173)
 # CORS settings
-origins = [
-    "http://localhost:5173",  # Vite/React frontend
-]
+# origins = [
+#     "http://localhost:5173",  # Vite/React frontend
+# ]
 
 app.add_middleware(
     CORSMiddleware,
