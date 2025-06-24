@@ -41,13 +41,13 @@ os.makedirs(WORK_DIR, exist_ok=True)
 os.makedirs(DATA_WORK, exist_ok=True)
 
 # Rutas a los ejecutables (asumiendo que están en WORK_DIR)
-YT_DLP_EXE = WORK_DIR / "yt-dlp.exe"
-FFMPEG_EXE = WORK_DIR / "ffmpeg.exe"
-FFPROBE_EXE = WORK_DIR / "ffprobe.exe" # Aunque no se usa directamente en subprocess, es buena práctica tenerlo
+YT_DLP_EXE = r"C:\GBerton2025\Desarrollos\auditxt2\backend\work\yt-dlp.exe"
+FFMPEG_EXE = r"C:\GBerton2025\Desarrollos\auditxt2\backend\work\ffmpeg.exe"
+FFPROBE_EXE = r"C:\GBerton2025\Desarrollos\auditxt2\backend\work\ffprobe.exe" # Aunque no se usa directamente en subprocess, es buena práctica tenerlo
 
 # Rutas a los archivos de datos temporales (en DATA_WORK)
-AUDIO_FILENAME = DATA_WORK / "audio_descargado.mp3"
-WAV_FILENAME = DATA_WORK / "audio_convertido.wav"
+AUDIO_FILENAME = r"C:\GBerton2025\Desarrollos\auditxt2\backend\work\data\audio_descargado.mp3"
+WAV_FILENAME = r"C:\GBerton2025\Desarrollos\auditxt2\backend\work\data\audio_convertido.wav"
 
 # --- Constantes de Azure y Lenguaje (tomadas de settings) ---
 # Estas también deben estar en tu .env y cargadas por settings

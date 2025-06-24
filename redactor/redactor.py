@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 router = APIRouter(tags=["Redactor"])
 
 # ────────────────────── CONFIGURACIÓN OPENAI ──────────────────────
-AZURE_OPENAI_KEY = settings.azure_openai_key
+AZURE_OPENAI_KEY = settings.azure_openai_api_key
 AZURE_OPENAI_ENDPOINT = settings.azure_openai_endpoint
 AZURE_DEPLOYMENT_NAME = settings.azure_openai_deployment
 
@@ -25,10 +25,11 @@ logger.info(f"📍 Endpoint: {AZURE_OPENAI_ENDPOINT}")
 logger.info(f"🚀 Deployment: {AZURE_DEPLOYMENT_NAME}")
 
 client = AsyncAzureOpenAI(
-    api_key=AZURE_OPENAI_KEY,
+    api_key=settings.azure_openai_api_key,
     api_version="2024-02-15-preview",
     azure_endpoint=AZURE_OPENAI_ENDPOINT
 )
+
 
 # ────────────────────── MODELOS DE DATOS ──────────────────────
 class RedaccionRequest(BaseModel):
