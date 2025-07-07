@@ -47,7 +47,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],    # ajusta esto en producción para mayor seguridad (ej. ["http://localhost:5173"])
+    #allow_origins=["*"],    # ajusta esto en producción para mayor seguridad (ej. ["http://localhost:5173"])
+    allow_origins=[
+        "http://localhost:5173",
+        "https://mango-flower-0cff3661e.1.azurestaticapps.net",  # ✅ origen de tu frontend en producción
+    ],    
     #allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
