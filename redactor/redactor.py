@@ -7,6 +7,9 @@ import logging
 import os
 import asyncio
 from docx import Document
+from azure.cognitiveservices.speech import SpeechConfig, SpeechSynthesizer, AudioConfig
+import uuid, os
+
 
 # ───────────────────────────── LOGGING ─────────────────────────────
 logger = logging.getLogger(__name__)
@@ -14,11 +17,14 @@ logger.setLevel(logging.INFO)
 
 # ───────────────────────────── ROUTER ─────────────────────────────
 router = APIRouter(tags=["Redactor"])
+router = APIRouter(tags=["TTS"])
 
 # ────────────────────── CONFIGURACIÓN OPENAI ──────────────────────
 AZURE_OPENAI_KEY = settings.azure_openai_api_key
 AZURE_OPENAI_ENDPOINT = settings.azure_openai_endpoint
 AZURE_DEPLOYMENT_NAME = settings.azure_openai_deployment
+
+print("🧪 Deployment usado:", AZURE_DEPLOYMENT_NAME)
 
 logger.info("🔐 Cargando configuración Azure OpenAI")
 logger.info(f"📍 Endpoint: {AZURE_OPENAI_ENDPOINT}")
@@ -42,6 +48,9 @@ class Articulo(BaseModel):
     titulo: str
     contenido: str
     autor: str
+    
+    
+    
 
 # ─────────────── GENERACIÓN DE CONTENIDO IA ───────────────
 async def generar_contenido_ia(prompt: str, tono: str, audiencia: str) -> str:
@@ -114,3 +123,21 @@ async def descargar_articulo(data: Articulo, formato: str = Query("txt", enum=["
     except Exception as e:
         logger.error(f"❌ Error al guardar artículo: {e}")
         raise HTTPException(status_code=500, detail=f"Error al guardar artículo: {str(e)}")
+
+# ──────────────── ENDPOINT: Texto a Audio ────────────────    
+@router.post("/texto-audio")
+async def texto_a_audio(data: dict):
+    texto = data.get("texto")
+    if not texto:
+        raise HTTPException(status_code=400, detail="Texto no proporcionado")
+
+    speech_config = SpeechConfig(subscription=settings.azure_speech_key, region=settings.azure_speech_region)
+    filename = f"/tmp/{uuid.uuid4()}.mp3"
+    audio_config = AudioConfig(filename=filename)
+    synthesizer = SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+
+    result = synthesizer.speak_text_async(texto).get()
+    if result.reason.name != "SynthesizingAudioCompleted":
+        raise HTTPException(status_code=500, detail="Fallo al sintetizar audio")
+
+    return FileResponse(filename, media_type="audio/mpeg", filename="voz.mp3")    
