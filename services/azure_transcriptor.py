@@ -1,5 +1,3 @@
-# backend/services/azure_transcriptor.py
-
 from pathlib import Path
 import os
 import subprocess
@@ -7,32 +5,45 @@ import logging
 import azure.cognitiveservices.speech as speechsdk
 import time
 import re
+import wave
 from uuid import uuid4
-
 
 from Backend_app.config import settings
 from .azure_format_text import limpiar_y_formatear_dialogo, resumen_tematico
 
-
-
-logger = logging.getLogger(__name__)    
+logger = logging.getLogger(__name__)
 
 # --- Constantes ---
 AZURE_KEY = settings.azure_speech_key
-AZURE_REGION = settings.azure_region
-LANGUAGE = "es-ES"
-WORK_DIR = settings.work_dir / "audio_work"
+#AZURE_REGION = settings.azure_region
+AZURE_REGION = settings.azure_speech_region  # Cambiado para usar la variable de entorno
+LANGUAGE = "es-ES"  # Usa es-ES o es-MX para mayor compatibilidad
+#WORK_DIR = settings.work_dir / "audio_work"
+WORK_DIR = Path("C:/tmp/auditxt")
+
 FFMPEG_EXE = settings.work_dir / "ffmpeg.exe"
 
-# --- Funciones utilitarias ---
+# --- Transcripción con Azure ---
 def transcribir_azure_wav(path_audio: str) -> str:
     logger.info("🔍 Transcribiendo con Azure...")
+    print("Azure Key:", AZURE_KEY)
+    print("Azure Region:", AZURE_REGION)
+    print("Language:", LANGUAGE)
+    print("Audio Path:", path_audio)
+
     speech_config = speechsdk.SpeechConfig(subscription=AZURE_KEY, region=AZURE_REGION)
     speech_config.speech_recognition_language = LANGUAGE
     audio_config = speechsdk.AudioConfig(filename=path_audio)
 
-    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    recognizer = speechsdk.SpeechRecognizer(
+        speech_config=speech_config,
+        audio_config=audio_config
+    )
+
     texto = []
+
+    def on_session_started(evt):
+        logger.info("✅ Sesión de reconocimiento iniciada.")
 
     def on_recognized(evt):
         if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
@@ -41,17 +52,20 @@ def transcribir_azure_wav(path_audio: str) -> str:
         else:
             logger.info(f"🛑 No se reconoció texto en este fragmento")
 
-    recognizer.recognized.connect(on_recognized)
+    def on_canceled(evt):
+        logger.error(f"🚫 Transcripción cancelada: {evt.reason}, error_details: {evt.error_details}")
 
-    done = False
     def stop_cb(evt):
         nonlocal done
         done = True
 
+    recognizer.session_started.connect(on_session_started)
+    recognizer.recognized.connect(on_recognized)
+    recognizer.canceled.connect(on_canceled)
     recognizer.session_stopped.connect(stop_cb)
-    recognizer.canceled.connect(stop_cb)
     recognizer.speech_end_detected.connect(stop_cb)
 
+    done = False
     recognizer.start_continuous_recognition()
 
     start_time = time.time()
@@ -62,6 +76,7 @@ def transcribir_azure_wav(path_audio: str) -> str:
 
     return " ".join(texto).strip()
 
+# --- Texto enriquecido ---
 def limpiar_y_formatear_dialogo(texto: str) -> str:
     frases = re.split(r'(?<=[.?!])\s*', texto)
     return "\n\n".join([f.strip() for f in frases if f.strip()])
@@ -73,10 +88,10 @@ def resumen_tematico_placeholder(texto: str) -> str:
 async def transcribir_archivo_azure(upload_file, modo_salida: str = "dialogo") -> str:
     logger.info(f"📥 Archivo recibido para transcripción: {upload_file.filename}, modo: {modo_salida}")
 
-    # Asegurar que el directorio de trabajo exista
+    # Asegurar carpeta de trabajo
     WORK_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Guardar el archivo con un nombre único
+    # Guardar el archivo
     original_ext = Path(upload_file.filename).suffix
     base_name = Path(upload_file.filename).stem
     unique_id = uuid4().hex[:8]
@@ -107,26 +122,30 @@ async def transcribir_archivo_azure(upload_file, modo_salida: str = "dialogo") -
         logger.error(f"❌ Error en conversión a WAV: {e.stderr}")
         return "Error en la conversión de audio."
 
-    # Transcribir
-    texto = transcribir_azure_wav(str(output_wav_path))
-    logger.info(f"📝 Texto recibido: {texto!r}")
+    # Leer duración para debug
+    try:
+        with wave.open(str(output_wav_path), "rb") as wf:
+            duration = wf.getnframes() / wf.getframerate()
+            logger.info(f"🔍 Duración del audio: {duration:.2f} segundos")
+    except Exception as e:
+        logger.warning(f"⚠️ Error leyendo el WAV antes de transcribir: {e}")
+
+    # Transcripción
+    try:
+        texto = transcribir_azure_wav(str(output_wav_path))
+        logger.info(f"📝 Texto recibido: {texto!r}")
+    except Exception as e:
+        logger.exception("❌ Error inesperado durante transcripción")
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
     if not texto:
         logger.warning("⚠️ No se reconoció ningún texto en el audio.")
         return ""
 
+    # Procesamiento adicional
     if modo_salida == "dialogo":
-            texto_final = limpiar_y_formatear_dialogo(texto)
+        return limpiar_y_formatear_dialogo(texto)
     elif modo_salida == "resumen":
-            texto_final = resumen_tematico(texto)
+        return resumen_tematico(texto)
     else:
-            texto_final = texto
-            
-    # if modo_salida == "dialogo":
-    #     return limpiar_y_formatear_dialogo(texto)
-    # elif modo_salida == "resumen":
-    #     return resumen_tematico_placeholder(texto)
-    # else:
-    #print(f"texto transcrito: {texto}")
-
-    return texto_final
+        return texto

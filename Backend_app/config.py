@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     azure_openai_api_version: str = Field("2025-03-01-preview", env="AZURE_OPENAI_API_VERSION")
 
     azure_speech_key: str = Field(..., env="AZURE_SPEECH_KEY")
+    azure_speech_region: str = Field(..., env="AZURE_SPEECH_REGION")  # Cambiado para usar la variable de entorno
     azure_region: str = Field(..., env="AZURE_REGION")
 
     port: int = Field(8000, env="PORT")

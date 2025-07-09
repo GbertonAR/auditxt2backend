@@ -28,7 +28,17 @@ os.makedirs("audios", exist_ok=True)
 async def transcribir_archivo(audio: UploadFile = File(...), modo_salida: str = Form("dialogo")):
     try:
         logger.info("📥 Archivo recibido para transcripción")
-        texto = await transcribir_archivo_azure(audio, modo_salida)
+        logger.info(f"Nombre del archivo: {audio.filename}")
+        logger.info(f"Tamaño del archivo: {audio.size} bytes")
+        # Validar tipo de archivo
+        if not audio.filename.lower().endswith(('.wav', '.mp3', '.flac', '.ogg', '.m4a')):
+            logger.error("❌ Tipo de archivo no soportado")
+            return JSONResponse(status_code=400, content={
+                "error": "Tipo de archivo no soportado. Solo se permiten archivos de audio."
+            })
+        print(f"modo_salida: {modo_salida}")
+        #texto = await transcribir_archivo_azure(audio, modo_salida)
+        texto = await transcribir_archivo_azure(audio)
 
         print(f"Texto transcrito (transcribir_archivo.py): {texto}")
         if not texto.strip():

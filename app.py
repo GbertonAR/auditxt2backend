@@ -10,6 +10,7 @@ from redactor.redactor import router as redactor_router
 from transcriptor.transcriptor import router as transcriptor_router
 from transcriptor.transcribir_archivo import router as transcribir_archivo_router
 from datetime import datetime
+import os
 
 # from transcriptor.transcribir_archivo import router as transcriptor_router
 # app.include_router(transcriptor_router, prefix="/api", tags=["Transcriptor"])
@@ -45,14 +46,21 @@ app = FastAPI()
 #     "http://localhost:5173",  # Vite/React frontend
 # ]
 
+ENV = os.getenv("ENV", "development")  # o podés usar DEBUG=True en lugar de ENV
+
+if ENV == "production":
+    allowed_origins = [
+        "https://mango-flower-0cff3661e.1.azurestaticapps.net"
+    ]
+else:
+    allowed_origins = [
+        "http://localhost:5173"
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    #allow_origins=["*"],    # ajusta esto en producción para mayor seguridad (ej. ["http://localhost:5173"])
-    allow_origins=[
-        "http://localhost:5173",
-        "https://mango-flower-0cff3661e.1.azurestaticapps.net",  # ✅ origen de tu frontend en producción
-    ],    
-    #allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=True,   # 🔄 Activo en ambos entornos por coherencia
     allow_methods=["*"],
     allow_headers=["*"],
 )
